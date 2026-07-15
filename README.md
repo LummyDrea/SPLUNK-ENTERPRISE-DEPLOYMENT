@@ -38,13 +38,15 @@ This project documents the deployment of Splunk Enterprise as a Security Informa
 
 1.2 Project Goals
 
-      Goal	                        Description	                                          Status
-      Deploy Splunk Enterprise	    Install and configure Splunk on Ubuntu Server	    ✅ Complete
-      Configure Log Collection	    Set up receiving port for Windows event logs	    ✅ Complete
-      Deploy Universal Forwarders	Install forwarders on Windows machines	            ✅ Complete
-      Integrate pfSense Logs	    Forward firewall logs to Splunk	                    ✅ Complete
-      Test & Validate	            Verify log ingestion and search functionality	    ✅ Complete
-      Document Project	            Create comprehensive documentation	                ✅ Complete 
+| Goal                        | Description                                          | Status     |
+| --------------------------- | ---------------------------------------------------- | ---------- |
+| Deploy Splunk Enterprise    | Install and configure Splunk on Ubuntu Server        | ✅ Complete |
+| Configure Log Collection    | Set up receiving ports for Windows event logs        | ✅ Complete |
+| Deploy Universal Forwarders | Install and configure forwarders on Windows machines | ✅ Complete |
+| Integrate pfSense Logs      | Forward firewall syslog data to Splunk               | ✅ Complete |
+| Test & Validate             | Verify log ingestion, searches, and event visibility | ✅ Complete |
+| Document Project            | Create comprehensive deployment documentation        | ✅ Complete |
+
 
  1.3 Lab Environment Overview
 
@@ -53,14 +55,15 @@ The lab environment consists of multiple virtual machines running on Oracle Virt
 
  1.4 Tools & Technologies Used
 
-                      Component	                       Technology	                          Version
-                      Virtualization Platform	         Oracle VirtualBox	                  7.x
-                      SIEM Platform	                   Splunk Enterprise	                  10.4.1
-                      Operating System (Splunk)	       Ubuntu Server	                      22.04 LTS
-                      Operating System (DC)	           Windows Server	                      2019 / 2022
-                      Operating System (Client)	       Windows 10/11	                      -
-                      Firewall	                       pfSense	                              2.7.x
-                      Forwarder	                       Splunk Universal Forwarder	          9.x
+| Component                            | Technology                 | Version     |
+| ------------------------------------ | -------------------------- | ----------- |
+| Virtualization Platform              | Oracle VirtualBox          | 7.x         |
+| SIEM Platform                        | Splunk Enterprise          | 10.4.1      |
+| Operating System (Splunk Server)     | Ubuntu Server              | 22.04 LTS   |
+| Operating System (Domain Controller) | Windows Server             | 2019 / 2022 |
+| Operating System (Client Endpoint)   | Windows 10/11              | -           |
+| Firewall                             | pfSense                    | 2.7.x       |
+| Log Forwarder                        | Splunk Universal Forwarder | 9.x         |
 
 
 
@@ -112,12 +115,13 @@ Figure 1: Virtual Lab Network Architecture
 
 1.6 IP Address Plan
             
-            Device	             Hostname	                      IP Address      	      Role
-            Firewall	         pfSense	                      192.168.1.1	          Gateway / Firewall
-            Splunk Server	     Ubuntu-Splunk-SIEM-Server	      XXX.XXX.X.109	          Splunk Enterprise
-            Domain Controller	 WIN-DC.lab.local	              XXX.XXX.X.101	          Windows Server / Log Source
-            Client Machine	     CLIENT-PC	                      XXX.XXX.X.103	          Windows Endpoint / Log Source
-            Attacker Machine	 Kali Linux	                      XXX.XXX.X.105	          Attack Testing
+| Device            | Hostname                  | IP Address    | Role                                 |
+| ----------------- | ------------------------- | ------------- | ------------------------------------ |
+| Firewall          | pfSense                   | 192.168.1.1   | Gateway / Firewall                   |
+| Splunk Server     | Ubuntu-Splunk-SIEM-Server | 192.168.1.109 | Splunk Enterprise SIEM               |
+| Domain Controller | WIN-DC.lab.local          | 192.168.1.101 | Windows Server / Log Source          |
+| Client Machine    | CLIENT-PC                 | 192.168.1.103 | Windows Endpoint / Log Source        |
+| Attacker Machine  | Kali Linux                | 192.168.1.105 | Security Testing / Attack Simulation |
 
 
 
@@ -233,10 +237,11 @@ Command Executed:
 
 3.5 Verify Installation
 
-                      Component            	Status	        Verification
-                      Splunk Process	    Running	        sudo /opt/splunk/bin/splunk status
-                      Web Interface	        Accessible      http://192.168.1.109:8000
-                      Service	            Enabled	        Boot-start configured
+| Component      | Status     | Verification                         |
+| -------------- | ---------- | ------------------------------------ |
+| Splunk Process | Running    | `sudo /opt/splunk/bin/splunk status` |
+| Web Interface  | Accessible | `http://192.168.1.109:8000`          |
+| Service        | Enabled    | Boot-start configured                |
 
 
 Figure 4: Splunk Web Interface Login Page
@@ -279,8 +284,20 @@ Configuration Details:
     Index	        main  
     Host	        IP
 
+
+
+
+
 Note: Port 5514 was used instead of the privileged port 514 to avoid permission issues.
 
+
+
+      | Setting          | Value             |
+      | ---------------- | ----------------- |
+      | Receiving Port   | 5514              |
+      | Data Source Type | syslog            |
+      | Splunk Index     | main              |
+      | Host Identifier  | Source IP Address |
 
 
 # 🛡️ SPLUNK ENTERPRISE DEPLOYMENT
