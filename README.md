@@ -615,7 +615,7 @@ text
 | Test Connectivity (Windows) | `Test-NetConnection 192.168.1.109 -Port 9997`           |
 
 
-# 10. Conclusion
+# 13. Conclusion
 - Project Summary
 
 This project successfully deployed Splunk Enterprise as a SIEM solution within a virtual lab environment. The key achievements include:
