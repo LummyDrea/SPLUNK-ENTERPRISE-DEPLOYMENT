@@ -39,7 +39,7 @@ This project documents the deployment of Splunk Enterprise as a Security Informa
 ### Project Goals
 
 | Goal                        | Description                                          | Status     |
-| --------------------------- | ---------------------------------------------------- | ---------- |
+| --------------------------- | ---------------------------------------------------- | ----------  |
 | Deploy Splunk Enterprise    | Install and configure Splunk on Ubuntu Server        | ✅ Complete |
 | Configure Log Collection    | Set up receiving ports for Windows event logs        | ✅ Complete |
 | Deploy Universal Forwarders | Install and configure forwarders on Windows machines | ✅ Complete |
@@ -569,7 +569,100 @@ text
 - Figure : WIN-DC Generated Failed Login
 <img width="1920" height="1080" alt="Screenshot 2026-07-13 124226" src="https://github.com/user-attachments/assets/2a868958-0f05-41e2-83ce-a61b623f5bae" />
 
+- Figure : Comprehensive Splunk Dashboard
+<img width="1302" height="798" alt="index-endpoint" src="https://github.com/user-attachments/assets/edf1c546-401f-4b06-83e9-7608182c26e6" />
 
+# 10. Troubleshooting & Lessons Learned
+## Issues Encountered
+
+| Issue                 | Description                                                    | Resolution                                                           |
+| --------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Port 514 Permission   | Splunk could not bind to the privileged port (514).            | Changed the listening port to **5514**.                              |
+| Timezone Mismatch     | Windows event timestamps were displayed incorrectly in Splunk. | Configured `props.conf` to correctly parse Windows event timestamps. |
+| Time Synchronization  | Ubuntu system time was one hour behind.                        | Installed and enabled `systemd-timesyncd`.                           |
+| No Events Showing     | The search time range was set incorrectly.                     | Changed the time range to **All Time** during testing.               |
+| Forwarder Not Sending | The Splunk Universal Forwarder service was not running.        | Restarted the **SplunkForwarder** service and verified connectivity. |
+
+# 11. Lessons Learned
+
+- Always use "All time" when troubleshooting: Time range issues are the #1 reason for "no results"
+
+- Time synchronization matters: All systems must have consistent time settings
+
+- Check timezone configuration: Windows Event Logs don't include timezone info; props.conf must handle this
+
+- Use high ports for syslog: Ports below 1024 require root privileges
+
+- Document as you go: Taking screenshots during setup saves time later
+
+- Restart services after configuration changes: Changes often require service restarts
+
+- Test connectivity first: Test-NetConnection and tcpdump are invaluable debugging tools
+
+- Configure indexes before sending data: Create the index before logs arrive
+
+# 12 Quick Reference Commands
+| Task                        | Command                                                 |
+| --------------------------- | ------------------------------------------------------- |
+| Check Splunk Status         | `sudo /opt/splunk/bin/splunk status`                    |
+| Restart Splunk              | `sudo /opt/splunk/bin/splunk restart`                   |
+| Check Listening Ports       | `sudo netstat -tulpn \| grep splunk`                    |
+| Check Ubuntu Time           | `timedatectl status`                                    |
+| Synchronize Time            | `sudo timedatectl set-ntp true`                         |
+| Packet Capture              | `sudo tcpdump -i any port 9997`                         |
+| Check Forwarder (Windows)   | `net start \| findstr Splunk`                           |
+| Restart Forwarder (Windows) | `net stop splunkforwarder && net start splunkforwarder` |
+| Test Connectivity (Windows) | `Test-NetConnection 192.168.1.109 -Port 9997`           |
+
+
+# 10. Conclusion
+- Project Summary
+
+This project successfully deployed Splunk Enterprise as a SIEM solution within a virtual lab environment. The key achievements include:
+
+| Achievement                                          | Status     |
+| ---------------------------------------------------- | ---------- |
+| Splunk Enterprise installed and configured on Ubuntu | ✅ Complete |
+| Windows Event Logs forwarded from WIN-DC             | ✅ Complete |
+| Windows Event Logs forwarded from Client-PC          | ✅ Complete |
+| pfSense firewall logs forwarded to Splunk            | ✅ Complete |
+| Successful searching and indexing of security events | ✅ Complete |
+| Comprehensive project documentation created          | ✅ Complete |
+
+- System Architecture Summary
+
+      ┌────────────────────────────────────────────────────────────────────────┐
+      │                           DATA FLOW ARCHITECTURE                       │
+      │                                                                        │
+      │   Win-DC ──┐                                                           │
+      │            │                                                           │
+      │   Client-PC┼──► Universal Forwarder ──► Port 9997 ──► Splunk Indexer   │
+      │            │                                                           │
+      │   pfSense ─┴──► Syslog ──► Port 5514 ──► Splunk Indexer                │
+      │                                                                        │
+      │                       │                                                │
+      │                       ▼                                                │
+      │              Splunk Search Head                                        │
+      │              (Web Interface: Port 8000)                                │
+      │                       │                                                │
+      │                       ▼                                                │
+      │              Security Monitoring & Alerting                            │
+      └────────────────────────────────────────────────────────────────────────┘
+- Final Thoughts
+
+The Splunk deployment has successfully transformed the virtual lab into a functional SIEM environment. This setup provides hands-on experience with:
+
+- SIEM deployment and configuration
+
+- Log collection and management
+
+- Security event monitoring
+
+- Incident investigation techniques
+
+- System administration across multiple platforms
+
+The skills and knowledge gained from this project are directly transferable to enterprise security operations and will serve as a foundation for more advanced security monitoring implementations.
 
 # 🛡️ SPLUNK ENTERPRISE DEPLOYMENT
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
