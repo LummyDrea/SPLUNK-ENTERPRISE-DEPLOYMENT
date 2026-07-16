@@ -131,12 +131,14 @@ Figure 1: Virtual Lab Network Architecture
 The Splunk Enterprise server runs on Ubuntu Server 22.04 LTS, provisioned as a virtual machine within the Oracle VirtualBox environment. The following specifications were carefully selected to ensure optimal performance while maintaining efficient resource utilization within the lab environment.
 
 
-            Setting	                                Value
-            Operating System	                    Ubuntu Server 22.04 LTS
-            RAM	                                    8 GB
-            Storage	                                40 GB
-            Network Adapter	                        Internal Network (LabLAN)
-            Hostname	                            Ubuntu-Splunk-SIEM-Server
+| Setting          | Value                     |
+| ---------------- | ------------------------- |
+| Operating System | Ubuntu Server 22.04 LTS   |
+| RAM              | 8 GB                      |
+| Storage          | 40 GB                     |
+| Network Adapter  | Internal Network (LabLAN) |
+| Hostname         | Ubuntu-Splunk-SIEM-Server |
+
 
 2.2 Static IP Configuration
 
@@ -151,7 +153,7 @@ Network Configuration File: /etc/netplan/50-cloud-init.yaml
       ethernets:
         enp0s3:
           dhcp4: false
-          addresses:
+           addresses:
             - 192.168.1.109/24
           gateway4: 192.168.1.1
           nameservers:
@@ -278,26 +280,23 @@ Settings → Data inputs → UDP → New
 
 Configuration Details:
 
-    Setting	        Value
-    Port	        5514
-    Source Type	    syslog
-    Index	        main  
-    Host	        IP
 
+## 📥 Syslog Input Configuration
 
-
+> **Port:** `5514`  
+> **Source Type:** `syslog`  
+> **Index:** `main`  
+> **Host:** Source IP Address
 
 
 Note: Port 5514 was used instead of the privileged port 514 to avoid permission issues.
 
+Figure 5: Syslog UDP Input Configuration
+<img width="1292" height="785" alt="Splunk DATAinput 5514" src="https://github.com/user-attachments/assets/db07ff97-2dd5-4ac5-807c-bc08271a0e91" />
 
 
-      | Setting          | Value             |
-      | ---------------- | ----------------- |
-      | Receiving Port   | 5514              |
-      | Data Source Type | syslog            |
-      | Splunk Index     | main              |
-      | Host Identifier  | Source IP Address |
+
+
 
 
 # 🛡️ SPLUNK ENTERPRISE DEPLOYMENT
