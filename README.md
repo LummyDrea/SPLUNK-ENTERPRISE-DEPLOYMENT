@@ -31,12 +31,12 @@ Table of Contents
 
    12. Appendix (Configs & Credentials)
 
-## 1. Introduction
-1.1 Project Overview
+# 1. Introduction
+### Project Overview
 
 This project documents the deployment of Splunk Enterprise as a Security Information and Event Management (SIEM) solution within a virtualized home lab environment. The primary objective was to centralize log collection from multiple endpoints and network infrastructure components for comprehensive security monitoring and analysis.
 
-1.2 Project Goals
+### Project Goals
 
 | Goal                        | Description                                          | Status     |
 | --------------------------- | ---------------------------------------------------- | ---------- |
@@ -48,12 +48,14 @@ This project documents the deployment of Splunk Enterprise as a Security Informa
 | Document Project            | Create comprehensive deployment documentation        | ✅ Complete |
 
 
- 1.3 Lab Environment Overview
+
+# 2. Lab Architecture Overview
+- Lab Environment Overview
 
 The lab environment consists of multiple virtual machines running on Oracle VirtualBox, interconnected through a pfSense firewall on an internal network.
 
 
- 1.4 Tools & Technologies Used
+###  Tools & Technologies Used
 
 | Component                            | Technology                 | Version     |
 | ------------------------------------ | -------------------------- | ----------- |
@@ -67,7 +69,8 @@ The lab environment consists of multiple virtual machines running on Oracle Virt
 
 
 
-1.5 Network Topology
+
+### Network Topology
 
 The lab is built on Oracle VirtualBox, utilizing an internal network (192.168.1.0/24) managed by a pfSense firewall acting as the gateway.
 
@@ -113,7 +116,7 @@ Figure 1: Virtual Lab Network Architecture
 
 
 
-1.6 IP Address Plan
+### IP Address Plan
             
 | Device            | Hostname                  | IP Address    | Role                                 |
 | ----------------- | ------------------------- | ------------- | ------------------------------------ |
@@ -126,7 +129,7 @@ Figure 1: Virtual Lab Network Architecture
 
 
 
-# 2.1 VM Specifications
+# 3. Ubuntu VM Specifications
 
 The Splunk Enterprise server runs on Ubuntu Server 22.04 LTS, provisioned as a virtual machine within the Oracle VirtualBox environment. The following specifications were carefully selected to ensure optimal performance while maintaining efficient resource utilization within the lab environment.
 
@@ -140,7 +143,7 @@ The Splunk Enterprise server runs on Ubuntu Server 22.04 LTS, provisioned as a v
 | Hostname         | Ubuntu-Splunk-SIEM-Server |
 
 
-2.2 Static IP Configuration
+### Static IP Configuration
 
 A static IP was configured to ensure the Splunk server is always reachable.
 
@@ -163,16 +166,16 @@ Network Configuration File: /etc/netplan/50-cloud-init.yaml
       version: 2
     ```
 
-Commands Executed:
+### Commands Executed:
 
       sudo netplan apply
       ip a
-2.3 System Updates
+### System Updates
 
     sudo apt update
     sudo apt upgrade -y
 
-2.4 Guest Additions Installation
+### Guest Additions Installation
 
       # Insert Guest Additions CD from VirtualBox menu
       sudo ./VBoxLinuxAdditions.run
@@ -191,8 +194,8 @@ Figure 2: Ubuntu Static IP Verification
     Confirm interface: enp0s3
 
 
-## 3. Splunk Enterprise Installation
-3.1 Download Splunk Enterprise
+# 4. Splunk Enterprise Installation
+ ### Download Splunk Enterprise
 
 Download Details:
 
@@ -202,7 +205,7 @@ Download Details:
 
     Source: https://www.splunk.com/en_us/download/splunk-enterprise.html
 
-Download Command:
+### Download Command:
 
 
     cd ~/Downloads
@@ -211,7 +214,7 @@ Download Command:
     "https://download.splunk.com/products/splunk/releases/10.4.1/linux/splunk-10.4.1-5a009d941268-linux-amd64.deb"
     ```
 
-3.2 Installation Process
+### Installation Process
 
         # Install curl dependency
           sudo apt install curl -y
@@ -220,13 +223,13 @@ Download Command:
         sudo dpkg -i splunk-*.deb
 
 
-3.3 First-Time Startup
+### First-Time Startup
 
       # Start Splunk with license acceptance
       sudo /opt/splunk/bin/splunk start --accept-license --answer-yes
 Administrator credentials were created during the initial setup.
 
-3.4 Enable Boot-Start
+### Enable Boot-Start
 
 To ensure Splunk Enterprise starts automatically whenever the Ubuntu server boots, the boot-start feature was enabled. This allows the SIEM platform to remain available after system restarts without requiring manual intervention.
 
@@ -237,7 +240,7 @@ Command Executed:
 
 
 
-3.5 Verify Installation
+### Verify Installation
 
 | Component      | Status     | Verification                         |
 | -------------- | ---------- | ------------------------------------ |
@@ -252,8 +255,8 @@ Figure 4: Splunk Web Interface Login Page
 <img width="1057" height="657" alt="SplunkDASHBOARD" src="https://github.com/user-attachments/assets/6a12ec18-288b-45f8-8964-2c8039f3f840" />
 
 
-##  4. Splunk Receiving Configuration
-4.1 Enable Port 9997 for Forwarder Traffic
+#  5. Splunk Receiving Configuration
+### Enable Port 9997 for Forwarder Traffic
 
 Navigation:
 Settings → Forwarding and receiving → Configure receiving → Add new
@@ -264,21 +267,21 @@ Configuration Details:
 
     Description: Universal Forwarder receiving port
 
-4.2 Verify Receiving Port
+### Verify Receiving Port
 Command: 
 
     sudo netstat -tulpn | grep 9997
 
-Expected Output:
+Output:
 
     tcp 0 0 0.0.0.0:9997 0.0.0.0:* LISTEN 1234/splunkd
 
-4.3 Configure Syslog Receiving Port
+### Configure Syslog Receiving Port
 
 Navigation:
 Settings → Data inputs → UDP → New
 
-Configuration Details:
+- Configuration Details:
 
 
 ## 📥 Syslog Input Configuration
@@ -294,8 +297,277 @@ Note: Port 5514 was used instead of the privileged port 514 to avoid permission 
 Figure 5: Syslog UDP Input Configuration
 <img width="1292" height="785" alt="Splunk DATAinput 5514" src="https://github.com/user-attachments/assets/db07ff97-2dd5-4ac5-807c-bc08271a0e91" />
 
+# 6. Windows Server (Win-DC) Forwarder Setup
+## Download Universal Forwarder
+
+    Download Source: https://www.splunk.com/en_us/download/universal-forwarder.html
+
+    Package: Windows .msi (64-bit)
+
+    Version: 9.x
+
+### Installation Process
+
+Installation Steps:
+
+    Run the downloaded .msi file
+
+    Accept license agreement → Clicked Next
+
+    Set credentials:
+                     Username:
+                     
+                     Password
+Deployment Server: Left blank
+
+Receiving Indexer: 192.168.1.109:9997
+
+Complete installation
+
+### Configure inputs.conf
+
+File Location:
+text
+
+C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf
+
+### Configuration Content:
+
+      [WinEventLog://Application]
+      index = endpoint
+      disabled = false
+      
+      [WinEventLog://Security]
+      index = endpoint
+      disabled = false
+      
+      [WinEventLog://System]
+      index = endpoint
+      disabled = false
+      
+      [WinEventLog://Microsoft-Windows-Sysmon/Operational]
+      index = endpoint
+      disabled = false
+      renderXml = true
+      source = XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
+
+### Restart Forwarder Service
+
+Method  - GUI:
+
+   Open Services (services.msc)
+
+   Find SplunkForwarder
+
+   Right-click → Restart
+
+### Test Connectivity
+
+PowerShell Command:
+powershell
+
+      Test-NetConnection 192.168.1.109 -Port 9997
+
+Expected Result:
+text
+
+TcpTestSucceeded: True
+
+### Verify Logs in Splunk
+
+Search Command:
+text
+
+      index=endpoint host=WIN-DC
+Figure : Windows Forwarder Configuration File
+<img width="860" height="652" alt="forwarder Input conf" src="https://github.com/user-attachments/assets/52c5499f-d7c9-4b1c-adde-c46bf00f5da0" />
+
+Figure : Splunk Forwarder Service Status
+<img width="855" height="662" alt="forwarder status" src="https://github.com/user-attachments/assets/fca286b9-d875-46eb-9380-b3008d289f7d" />
+
+Figure 10: Forwarder Connectivity Test
+<img width="856" height="646" alt="Test Net connection" src="https://github.com/user-attachments/assets/348417b0-d953-4d2f-a9cd-594b8d1f1c44" />
+
+# 7. Windows Client (Client-PC) Forwarder Setup
+### Installation Process
+
+Same process as Win-DC with following configuration:
+Setting	Value
+Receiving Indexer	192.168.1.109:9997
+                
+                  Username	
+                  Password	
+### inputs.conf Configuration
+
+File Location:
+text
+         
+          C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf
+
+- Configuration Content:
+
+      [WinEventLog://Application]
+      index = endpoint
+      disabled = false
+      
+      [WinEventLog://Security]
+      index = endpoint
+      disabled = false
+      
+      [WinEventLog://System]
+      index = endpoint
+      disabled = false
+### Service Verification
+
+Steps:
+
+    Open Services (services.msc)
+
+    Verify SplunkForwarder is Running
+
+    Verify Startup Type: Automatic
+
+### Verify Logs in Splunk
+
+Search Command:
+text
+
+      index=endpoint host=CLIENT-PC
+
+Figure : Client-PC Universal Forwarder Installation
+<img width="612" height="476" alt="Screenshot 2026-07-15 180304" src="https://github.com/user-attachments/assets/539fe191-a76c-4120-b45d-17143da3e190" />
 
 
+<img width="1004" height="582" alt="Client PC input" src="https://github.com/user-attachments/assets/637ed9c2-f841-4eb8-b21a-6f790526dc66" />
+
+# 8. pfSense Syslog Integration
+### Access pfSense Web Interface
+
+    URL: https://192.168.1.1
+
+    Username: 
+
+    Password: 
+
+### Configure Remote Syslog
+
+Navigation:
+Status → System Logs → Settings → Remote Logging Options
+
+Configuration Details:
+| Setting                | Value                |
+| ---------------------- | -------------------- |
+| Enable Remote Logging  | ✓ Checked            |
+| Remote Log Server      | `192.168.1.109:5514` |
+| IP Protocol            | IPv4                 |
+| Remote Syslog Contents | Everything           |
+
+- 7.3 Syslog Contents Selected
+
+    ☑ Everything
+
+    ☐ System Events (included in Everything)
+
+    ☐ Firewall Events (included in Everything)
+
+    ☐ DNS Events (included in Everything)
+
+    ☐ DHCP Events (included in Everything)
+
+    ☐ General Authentication Events (included in Everything)
+
+    ☐ VPN Events (included in Everything)
+
+    ☐ Gateway Monitor Events (included in Everything)
+
+
+- 7.4 Verify Syslog Data
+
+Splunk Search:
+text
+
+index=main sourcetype=syslog
+
+Figure : pfSense Syslog Configuration
+<img width="1000" height="531" alt="Pfsense Syslog Configuration 0" src="https://github.com/user-attachments/assets/dda0efa9-b538-4e8d-9bc2-a4190694fa94" />
+
+
+# 9. Testing & Validation
+### Generate Windows Event Logs
+
+- Test 1: Failed Login (Event ID 4625)
+
+Steps:
+
+    On WIN-DC: Press Windows Key + L to lock
+
+    Attempt login with incorrect password
+
+    Event ID 4625 should be generated
+
+
+Expected Event Details:
+
+| Field         | Value         |
+| ------------- | ------------- |
+| Event ID      | `4625`        |
+| Log Name      | Security      |
+| Task Category | Logon         |
+| Keywords      | Audit Failure |
+| Type          | Failed Logon  |
+
+- Test 2: Successful Login (Event ID 4624)
+
+Steps:
+
+    On WIN-DC: Lock session
+
+    Attempt login with correct password
+
+    Event ID 4624 should be generated
+
+### Verified in Splunk
+
+Search for Failed Logins:
+text
+
+      index=endpoint EventCode=4625
+
+Search for Successful Logins:
+text
+
+      index=endpoint EventCode=4624
+
+Search for All Windows Logs:
+text
+
+      index=endpoint
+
+Search for Win-DC Logs Only:
+text
+
+      index=endpoint host=WIN-DC
+
+Search for Client-PC Logs Only:
+text
+
+      index=endpoint host=CLIENT-PC01
+
+### Generate Firewall Traffic
+
+- Generate Traffic for pfSense Logs:
+cmd
+
+ping 8.8.8.8 -t
+nslookup google.com
+
+Search for Firewall Logs:
+text
+
+      index=main sourcetype=syslog
+
+- Figure : WIN-DC Generated Failed Login
+<img width="1920" height="1080" alt="Screenshot 2026-07-13 124226" src="https://github.com/user-attachments/assets/2a868958-0f05-41e2-83ce-a61b623f5bae" />
 
 
 
