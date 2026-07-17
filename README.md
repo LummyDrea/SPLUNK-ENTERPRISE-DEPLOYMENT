@@ -74,7 +74,7 @@ The lab environment consists of multiple virtual machines running on Oracle Virt
 
 The lab is built on Oracle VirtualBox, utilizing an internal network (192.168.1.0/24) managed by a pfSense firewall acting as the gateway.
 
-Figure 1: Virtual Lab Network Architecture
+- Figure 1: Virtual Lab Network Architecture
 
                   ┌─────────────────────────────────────────────────────────────────────┐
                   │                    VIRTUAL LAB NETWORK ARCHITECTURE                 │
@@ -181,7 +181,7 @@ Network Configuration File: /etc/netplan/50-cloud-init.yaml
       sudo ./VBoxLinuxAdditions.run
       sudo reboot
 
-Figure 2: Ubuntu Static IP Verification
+- Figure 2: Ubuntu Static IP Verification
 <img width="1290" height="787" alt="ip a Output" src="https://github.com/user-attachments/assets/b34c1d36-33c1-4ea1-a978-4aaf02276ee5" />
 
 
@@ -249,9 +249,11 @@ Command Executed:
 | Service        | Enabled    | Boot-start configured                |
 
 
-Figure 4: Splunk Web Interface Login Page
+- Figure 3: Splunk Web Interface Login Page
 
 <img width="1077" height="640" alt="Splunk WebUI" src="https://github.com/user-attachments/assets/e192e06c-6013-44ab-8dc6-6b4b097ba975" />
+
+- Figure 4:
 <img width="1057" height="657" alt="SplunkDASHBOARD" src="https://github.com/user-attachments/assets/6a12ec18-288b-45f8-8964-2c8039f3f840" />
 
 
@@ -294,7 +296,7 @@ Settings → Data inputs → UDP → New
 
 Note: Port 5514 was used instead of the privileged port 514 to avoid permission issues.
 
-Figure 5: Syslog UDP Input Configuration
+- Figure 5: Syslog UDP Input Configuration
 <img width="1292" height="785" alt="Splunk DATAinput 5514" src="https://github.com/user-attachments/assets/db07ff97-2dd5-4ac5-807c-bc08271a0e91" />
 
 # 6. Windows Server (Win-DC) Forwarder Setup
@@ -379,13 +381,13 @@ Search Command:
 text
 
       index=endpoint host=WIN-DC
-Figure : Windows Forwarder Configuration File
+- Figure 6: Windows Forwarder Configuration File
 <img width="860" height="652" alt="forwarder Input conf" src="https://github.com/user-attachments/assets/52c5499f-d7c9-4b1c-adde-c46bf00f5da0" />
 
-Figure : Splunk Forwarder Service Status
+- Figure 7: Splunk Forwarder Service Status
 <img width="855" height="662" alt="forwarder status" src="https://github.com/user-attachments/assets/fca286b9-d875-46eb-9380-b3008d289f7d" />
 
-Figure 10: Forwarder Connectivity Test
+- Figure 8: Forwarder Connectivity Test
 <img width="856" height="646" alt="Test Net connection" src="https://github.com/user-attachments/assets/348417b0-d953-4d2f-a9cd-594b8d1f1c44" />
 
 # 7. Windows Client (Client-PC) Forwarder Setup
@@ -434,7 +436,7 @@ text
 
       index=endpoint host=CLIENT-PC
 
-Figure : Client-PC Universal Forwarder Installation
+- Figure 9: Client-PC Universal Forwarder Installation
 <img width="612" height="476" alt="Screenshot 2026-07-15 180304" src="https://github.com/user-attachments/assets/539fe191-a76c-4120-b45d-17143da3e190" />
 
 
@@ -488,7 +490,7 @@ text
 
 index=main sourcetype=syslog
 
-Figure : pfSense Syslog Configuration
+- Figure 10: pfSense Syslog Configuration
 <img width="1000" height="531" alt="Pfsense Syslog Configuration 0" src="https://github.com/user-attachments/assets/dda0efa9-b538-4e8d-9bc2-a4190694fa94" />
 
 
@@ -566,10 +568,10 @@ text
 
       index=main sourcetype=syslog
 
-- Figure : WIN-DC Generated Failed Login
+- Figure 11: WIN-DC Generated Failed Login
 <img width="1920" height="1080" alt="Screenshot 2026-07-13 124226" src="https://github.com/user-attachments/assets/2a868958-0f05-41e2-83ce-a61b623f5bae" />
 
-- Figure : Comprehensive Splunk Dashboard
+- Figure 12: Comprehensive Splunk Dashboard
 <img width="1302" height="798" alt="index-endpoint" src="https://github.com/user-attachments/assets/edf1c546-401f-4b06-83e9-7608182c26e6" />
 
 # 10. Troubleshooting & Lessons Learned
@@ -631,6 +633,7 @@ This project successfully deployed Splunk Enterprise as a SIEM solution within a
 
 - System Architecture Summary
 
+- Figure 13: Data Flow Architecture.
       ┌────────────────────────────────────────────────────────────────────────┐
       │                           DATA FLOW ARCHITECTURE                       │
       │                                                                        │
